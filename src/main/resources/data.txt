@@ -1,0 +1,174 @@
+
+INGRESA LOS DATOS PARA UNA BASE DE DATOS DE POSTGREST EN SPRIGN BOOT
+RECUERDA INGRESA DATOS UNO POR UNO POR QUE SI INGRESAS VARIOS A LA VEZ TE VA A DAR ERROR
+HAS UN SISTEMA DE VENTAS DE COMPONENTE DE COMPUTADORAS
+
+BUSCA LINK DE IMAGENES (INTERNET LIBRE) PUEDE SER EN PEXELS.COM, EN CASO DE NO ENCONTRAR, USA IMAGENES DE STOCKLIBRE
+O DE CLUDINARY  : https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/azuyi95edemjwlspknsp.png
+TU ELIGES PERO LAS IMAGENES FUNCIONEN
+
+AGREGA UNOS 100 DATOS  DE PRODUCTOS DE COMPUTADORAS,
+SIMUAL LOS DATOS DE UNA TIENDA VIRTUAL DE HARDWARE DE COMPUTADORAS PARA ARMAR PC GAMER
+LOS PRECIOS DEBEN ESTAR EN SOLES PERUANOS (PEN)
+
+PON ALMENOS UNAS 5 CATEGORIAS
+---- MODELOS DE TABLAS ----
+package com.TiendaVirtual.proyecto.persistence.model;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Getter
+@Setter
+@Table(name = "categories")
+@NoArgsConstructor
+@AllArgsConstructor
+public class Category {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(unique = true)
+    private String name;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Product> products = new ArrayList<>();
+}
+
+package com.TiendaVirtual.proyecto.persistence.model;
+
+import com.TiendaVirtual.proyecto.presentation.dto.res.CategoryDto;
+import com.TiendaVirtual.proyecto.presentation.dto.res.ProductDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Getter
+@Setter
+@Table(name = "products")
+@NoArgsConstructor
+@AllArgsConstructor
+public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(unique = true)
+    private String name;
+
+    @Column(name = "url_image")
+    private String urlImage;
+
+    private String description;
+    private double price;
+    private int stock;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    @JsonBackReference
+    private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrderDetail> orderDetails = new ArrayList<>();
+}
+
+-------------------------------------------------------------
+
+-- SQL script para inicializar la base de datos con categorías y productos en SOLES (PEN)
+-- Sistema de tienda virtual de hardware de computadoras
+
+-- SQL script para inicializar la base de datos con categorías y productos en SOLES (PEN)
+-- Sistema de tienda virtual de hardware de computadoras
+
+-- Insertar categorías (uno por uno)
+INSERT INTO categories (id, name) VALUES (1, 'Procesadores');
+INSERT INTO categories (id, name) VALUES (2, 'Tarjetas Gráficas');
+INSERT INTO categories (id, name) VALUES (3, 'Memoria RAM');
+INSERT INTO categories (id, name) VALUES (4, 'Almacenamiento');
+INSERT INTO categories (id, name) VALUES (5, 'Placas Base');
+INSERT INTO categories (id, name) VALUES (6, 'Gabinetes');
+INSERT INTO categories (id, name) VALUES (7, 'Fuentes de Poder');
+INSERT INTO categories (id, name) VALUES (8, 'Monitores');
+INSERT INTO categories (id, name) VALUES (9, 'Periféricos');
+
+-- Insertar productos - PROCESADORES (uno por uno)
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (1, 'AMD Ryzen 7 7700X', 'https://images.pexels.com/photos/2588757/pexels-photo-2588757.jpeg', 'Procesador AMD Ryzen 7 7700X 4.5GHz, 8 núcleos, 16 hilos, Socket AM5', 284.31, 15, 1);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (2, 'Intel Core i7-14700KF', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/azuyi95edemjwlspknsp.png', 'Procesador Intel Core i7-14700KF 3.4/5.6GHz, 20 núcleos, LGA1700', 346.28, 12, 1);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (3, 'AMD Ryzen 5 5600X', 'https://images.pexels.com/photos/4709285/pexels-photo-4709285.jpeg', 'Procesador AMD Ryzen 5 5600X 3.7GHz, 6 núcleos, 12 hilos, AM4', 128.90, 25, 1);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (4, 'AMD Ryzen 7 5800X', 'https://images.pexels.com/photos/2399840/pexels-photo-2399840.jpeg', 'Procesador AMD Ryzen 7 5800X 3.8GHz, 8 núcleos, 16 hilos', 156.90, 20, 1);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (5, 'Intel Core i5-14400F', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/processor1.png', 'Procesador Intel Core i5-14400F 2.5/4.7GHz, 10 núcleos', 130.99, 30, 1);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (6, 'AMD Ryzen 9 7900X', 'https://images.pexels.com/photos/16011574/pexels-photo-16011574.jpeg', 'Procesador AMD Ryzen 9 7900X 4.7GHz, 12 núcleos, 24 hilos', 399.00, 8, 1);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (7, 'AMD Ryzen 7 7800X3D', 'https://images.pexels.com/photos/5474295/pexels-photo-5474295.jpeg', 'Procesador gaming AMD Ryzen 7 7800X3D 4.2/5GHz con 3D V-Cache', 399.00, 10, 1);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (8, 'Intel Core i9-14900K', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/processor2.png', 'Procesador Intel Core i9-14900K, 24 núcleos, hasta 6GHz', 589.99, 5, 1);
+
+-- Insertar productos - TARJETAS GRÁFICAS
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (9, 'NVIDIA RTX 4060', 'https://images.pexels.com/photos/8622881/pexels-photo-8622881.jpeg', 'Tarjeta gráfica NVIDIA RTX 4060 8GB GDDR6, DLSS 3', 299.99, 20, 2);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (10, 'AMD Radeon RX 7800 XT', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/gpu1.png', 'GPU AMD Radeon RX 7800 XT 16GB GDDR6', 499.99, 15, 2);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (11, 'NVIDIA RTX 4070 Ti', 'https://images.pexels.com/photos/6341490/pexels-photo-6341490.jpeg', 'Tarjeta gráfica RTX 4070 Ti 12GB GDDR6X', 799.99, 12, 2);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (12, 'NVIDIA RTX 4080', 'https://images.pexels.com/photos/10391020/pexels-photo-10391020.jpeg', 'GPU NVIDIA RTX 4080 16GB GDDR6X, arquitectura Ada Lovelace', 1199.99, 7, 2);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (13, 'AMD Radeon RX 6600', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/gpu2.png', 'Tarjeta gráfica AMD RX 6600 8GB para gaming 1080p', 259.99, 25, 2);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (14, 'NVIDIA RTX 4090', 'https://images.pexels.com/photos/11034406/pexels-photo-11034406.jpeg', 'GPU flagship NVIDIA RTX 4090 24GB GDDR6X', 1599.99, 3, 2);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (15, 'Intel Arc A770', 'https://images.pexels.com/photos/8622914/pexels-photo-8622914.jpeg', 'GPU Intel Arc A770 16GB, soporte AV1', 349.99, 18, 2);
+
+-- Insertar productos - MEMORIA RAM
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (16, 'Corsair Vengeance RGB 32GB', 'https://images.pexels.com/photos/2582928/pexels-photo-2582928.jpeg', 'Kit RAM DDR5 32GB (2x16GB) 6000MHz RGB', 179.99, 35, 3);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (17, 'G.Skill Trident Z5 32GB', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/ram1.png', 'Memoria DDR5 32GB 6400MHz CL32 RGB', 209.99, 20, 3);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (18, 'Kingston Fury Beast 16GB', 'https://images.pexels.com/photos/4316/technology-computer-chips-gigabyte.jpg', 'Kit RAM DDR5 16GB (2x8GB) 5200MHz', 89.99, 45, 3);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (19, 'Crucial 32GB DDR4', 'https://images.pexels.com/photos/163125/board-printed-circuit-board-computer-electronics-163125.jpeg', 'Memoria RAM DDR4 32GB 3200MHz CL16', 109.99, 50, 3);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (20, 'TeamGroup T-Force Delta 16GB', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/ram2.png', 'Kit RAM DDR4 16GB 3600MHz RGB', 69.99, 40, 3);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (21, 'Corsair Dominator Platinum 64GB', 'https://images.pexels.com/photos/2588758/pexels-photo-2588758.jpeg', 'Kit premium DDR5 64GB 5600MHz RGB', 399.99, 8, 3);
+
+-- Insertar productos - ALMACENAMIENTO
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (22, 'Samsung 990 PRO 2TB', 'https://images.pexels.com/photos/117729/pexels-photo-117729.jpeg', 'SSD NVMe M.2 2TB PCIe 4.0, 7450MB/s', 169.94, 25, 4);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (23, 'Kingston NV3 1TB', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/ssd1.png', 'SSD NVMe 1TB PCIe 4.0, 6000MB/s', 56.89, 55, 4);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (24, 'WD Black SN850X 1TB', 'https://images.pexels.com/photos/4792730/pexels-photo-4792730.jpeg', 'SSD Gaming NVMe 1TB, hasta 7300MB/s', 89.99, 30, 4);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (25, 'Samsung 990 EVO Plus 2TB', 'https://images.pexels.com/photos/33278/disc-reader-reading-arm-hard-drive-hdd.jpg', 'SSD NVMe 2TB PCIe 5.0, 7250MB/s', 127.99, 22, 4);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (26, 'Crucial MX500 1TB', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/ssd2.png', 'SSD SATA 2.5" 1TB, 560MB/s', 64.99, 60, 4);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (27, 'Seagate Barracuda 4TB', 'https://images.pexels.com/photos/1432675/pexels-photo-1432675.jpeg', 'Disco duro HDD 4TB 7200RPM SATA', 89.99, 40, 4);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (28, 'Forgeon Nimbus PRO 1TB', 'https://images.pexels.com/photos/4709290/pexels-photo-4709290.jpeg', 'SSD NVMe 1TB PCIe 4.0, 7400MB/s', 79.99, 35, 4);
+
+-- Insertar productos - PLACAS BASE
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (29, 'ASUS ROG Strix Z790-E', 'https://images.pexels.com/photos/4316/technology-computer-chips-gigabyte.jpg', 'Placa base gaming WiFi 6E, DDR5, Intel Z790', 479.99, 10, 5);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (30, 'MSI MAG B650 TOMAHAWK', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/motherboard1.png', 'Placa base AMD B650, DDR5, Socket AM5', 259.99, 18, 5);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (31, 'Gigabyte Z790 AORUS Elite', 'https://images.pexels.com/photos/2588755/pexels-photo-2588755.jpeg', 'Motherboard Intel Z790, DDR5, PCIe 5.0', 349.99, 15, 5);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (32, 'ASRock B760 Pro RS', 'https://images.pexels.com/photos/825262/pexels-photo-825262.jpeg', 'Placa base Intel B760, DDR5, LGA1700', 159.99, 25, 5);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (33, 'ASUS TUF Gaming X670E', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/motherboard2.png', 'Motherboard AMD X670E, PCIe 5.0, AM5', 329.99, 12, 5);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (34, 'MSI PRO B760-P', 'https://images.pexels.com/photos/3520694/pexels-photo-3520694.jpeg', 'Placa base profesional Intel B760', 139.99, 30, 5);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (35, 'Biostar A520MH', 'https://images.pexels.com/photos/4709289/pexels-photo-4709289.jpeg', 'Placa base económica AMD A520, AM4', 69.99, 40, 5);
+
+-- Insertar productos - GABINETES
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (36, 'Corsair 5000D Airflow', 'https://images.pexels.com/photos/2588754/pexels-photo-2588754.jpeg', 'Gabinete mid-tower, vidrio templado, alto flujo de aire', 164.99, 20, 6);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (37, 'NZXT H7 Flow RGB', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/case1.png', 'Case ATX con excelente ventilación, RGB incluido', 129.99, 25, 6);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (38, 'Lian Li PC-O11 Dynamic', 'https://images.pexels.com/photos/1714208/pexels-photo-1714208.jpeg', 'Gabinete premium dual chamber, vidrio templado', 159.99, 15, 6);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (39, 'Cooler Master MasterBox Q300L', 'https://images.pexels.com/photos/4792745/pexels-photo-4792745.jpeg', 'Gabinete micro-ATX compacto y modular', 44.99, 35, 6);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (40, 'Fractal Design Meshify 2', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/case2.png', 'Case high-airflow con filtros removibles', 139.99, 18, 6);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (41, 'Thermaltake Core V21', 'https://images.pexels.com/photos/2588756/pexels-photo-2588756.jpeg', 'Gabinete cube micro-ATX, diseño modular', 79.99, 22, 6);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (42, 'be quiet! Pure Base 500DX', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/case3.png', 'Gabinete silencioso con RGB ARGB', 109.99, 28, 6);
+
+-- Insertar productos - FUENTES DE PODER
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (43, 'Corsair RM850x 850W', 'https://images.pexels.com/photos/2582932/pexels-photo-2582932.jpeg', 'Fuente 850W 80+ Gold, modular completa', 139.99, 22, 7);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (44, 'EVGA SuperNOVA 1000W GT', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/psu1.png', 'PSU 1000W 80+ Gold, full modular', 189.99, 12, 7);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (45, 'Seasonic Focus GX-750', 'https://images.pexels.com/photos/4316/technology-computer-chips-gigabyte.jpg', 'Fuente 750W 80+ Gold, semi-modular', 109.99, 28, 7);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (46, 'Thermaltake Smart 600W', 'https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg', 'PSU 600W 80+ White certificada', 49.99, 40, 7);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (47, 'be quiet! Dark Power 13 1000W', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/psu2.png', 'Fuente premium 1000W 80+ Titanium', 329.99, 8, 7);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (48, 'Cooler Master MWE 650W', 'https://images.pexels.com/photos/2588759/pexels-photo-2588759.jpeg', 'PSU 650W 80+ Bronze, cables fijos', 69.99, 35, 7);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (49, 'MSI MAG A850GL', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/psu3.png', 'Fuente 850W 80+ Gold, PCIe 5.0 ready', 129.99, 20, 7);
+INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (50, 'Gigabyte P750GM', 'https://images.pexels.com/photos/4709292/pexels-photo-4709292.jpeg', 'PSU 750W 80+ Gold modular', 99.99, 25, 7);
+
+-- Ajustar la secuencia de ID para evitar conflictos
+ALTER SEQUENCE categories_id_seq RESTART WITH 8;
+ALTER SEQUENCE products_id_seq RESTART WITH 51;

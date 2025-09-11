@@ -1,0 +1,10 @@
+@rootUrl=http://localhost:8080/swagger-ui.html
+
+### Register a new user
+POST {{rootUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
