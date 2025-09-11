@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SISTEMA DE VENTAS Y PROFORMAS CON GENERACIÓN DE PDF (FRONTEND)
 
-## Getting Started
+## Descripción
 
-First, run the development server:
+Este sistema permite la gestión integral de ventas y proformas, facilitando la administración de productos, clientes y generación de documentos en PDF. Está orientado a pequeñas y medianas empresas que requieren un control eficiente de sus operaciones comerciales.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Funcionalidades principales
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Gestión de productos:** Alta, edición y eliminación de productos.
+- **Gestión de clientes:** Registro y administración de clientes.
+- **Ventas:** Creación, visualización y seguimiento de ventas.
+- **Proformas:** Generación, edición y conversión de proformas a ventas.
+- **Tablas dinámicas:** Visualización de ventas y proformas en tablas interactivas.
+- **Gráficos comparativos:** Comparación semanal de ventas y proformas mediante gráficos de barras y donas.
+- **Exportación a PDF:** Generación de documentos PDF para facturas y proformas.
+- **Autenticación de usuarios:** Registro, inicio de sesión y gestión de perfiles.
+- **Notificaciones:** Sistema de alertas y mensajes para acciones importantes.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tecnologías usadas
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Frontend:**
+    - React
+    - TypeScript
+    - Next.js
+    - Tailwind CSS
+- **Gestión de estado:** Zustand
+- **Gráficos:** Chart.js
+- **Generación de PDF:** jsPDF
+- **Consumo de API:** Fetch API
+- **Control de versiones:** Git
+- **Otros:** Cloudinary para gestión de imágenes
 
-## Learn More
+## Estructura del sistema
 
-To learn more about Next.js, take a look at the following resources:
+- **Módulo de productos:** Administración de catálogo.
+- **Módulo de clientes:** Gestión de información de clientes.
+- **Módulo de ventas y proformas:** Procesos de venta y generación de proformas.
+- **Módulo de reportes:** Visualización de estadísticas y exportación de documentos.
+- **Módulo de autenticación:** Seguridad y control de acceso.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Instalación y ejecución
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Clona el repositorio.
+2. Instala las dependencias con `npm install`.
+3. Ejecuta el proyecto con `npm run dev`.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Desarrollado para optimizar la gestión comercial y documental de tu negocio.
