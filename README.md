@@ -76,8 +76,10 @@ El proyecto está dividido en dos partes:
 ---
 
 ## Imagenes del proyecto 
+<img width="1000" height="817" alt="image" src="https://github.com/user-attachments/assets/7647f055-ab9f-4caf-9509-3fee54f06161" />
 
 <img width="1856" height="896" alt="image" src="https://github.com/user-attachments/assets/2b7cf063-2e17-4cce-9990-2800197b30f8" />
+
 <img width="1909" height="710" alt="image" src="https://github.com/user-attachments/assets/0f81a660-5e99-4aeb-b7f7-e4f9cca5b8a6" />
 <img width="999" height="952" alt="image" src="https://github.com/user-attachments/assets/e56925aa-da68-4a51-b802-b9c4d32fbcc2" />
 
