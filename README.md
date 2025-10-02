@@ -44,3 +44,22 @@ Este proyecto es un sistema completo para la gestión de ventas y proformas en u
 ## Documentación de la API
 
 La API está documentada y disponible mediante Swagger en la ruta `/swagger-ui.html` una vez desplegada la aplicación.
+
+## COMANDOS PARA LEVANTAR EN DOCKER
+
+````bash
+# Construir y levantar servicios
+docker-compose up --build
+
+# Levantar en segundo plano
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f spring_app
+
+# Detener servicios
+docker-compose down
+
+# Eliminar todo (incluyendo volúmenes)
+docker-compose down -v
+````
