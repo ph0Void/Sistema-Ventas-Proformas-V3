@@ -31,19 +31,15 @@ public class CustomUserDetailService implements UserDetailsService{
         Set<GrantedAuthority> authorities;
         if (userDto.getRole() == null){
             logger.warn("No se pudo obtener el rol del usuario: {}", username);
-            // Opción A: Asignar autoridades vacías (el usuario no tendrá roles)
             authorities = Collections.emptySet();
-            // Opción B: Asignar un rol/autoridad por defecto (si aplica a tu lógica)
-            // authorities = Set.of(new SimpleGrantedAuthority("ROLE_DEFAULT")); // O el rol que definas
         }else {
-            // Si el rol no es nulo, crea la autoridad normalmente
             authorities = Set.of(SecurityUtils.converToAuthority(userDto.getRole()));
         }
 
         return UserPrincipal.builder()
                 .id(userDto.getId())
                 .username(userDto.getUsername())
-                .password(userDto.getPassword()) // contraseña haseada de l abd
+                .password(userDto.getPassword()) 
                 .authorities(authorities)
                 .user(UserDto.toEntity(userDto))
                 .build();
