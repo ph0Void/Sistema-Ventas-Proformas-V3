@@ -31,11 +31,6 @@ public class SaleController implements ICashOrderController<SaleReqDto, Long> {
 
     private final UserHandler userHandler;
 
-    /**
-     * Obtiene el ID del vendedor asociado al usuario autenticado.
-     * Lanza una excepción si no se encuentra un vendedor asociado.
-     * @return ID del vendedor
-     */
     private Long getIdSellerUser(){
         Long userId = userHandler.getCurrentUserId();
         Seller user = sellerService.findByUserId(userId)
