@@ -51,7 +51,6 @@ public class ConfigSecurity {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() throws Exception {
-        // Pasa el proveedor JWT y la lista de rutas públicas al constructor del filtro
         return new JwtAuthorizationFilter(jwtProvider, PUBLIC_PATHS);
     }
 
@@ -63,27 +62,20 @@ public class ConfigSecurity {
 
         http.csrf(csrf -> csrf.disable())
                 //.cors(cors -> cors.disable())
-                // *** CAMBIO CLAVE: Habilita CORS usando la configuración por defecto (que buscará tu WebConfig) ***
-                .cors(Customizer.withDefaults())// ACTIVA LOS BEARER TOKEN DEL FRONEND
+                .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authHttp -> {
-                    logger.info("INICIANDO CONFIGURACION DE SEGURIDAD");
-                    // *** RECOMENDADO: Permite explícitamente las solicitudes OPTIONS ***
-                    // Esto asegura que las solicitudes preflight de CORS no sean bloqueadas por la seguridad
                     authHttp.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll(); // Permite las opciones CORS
 
                     String[] publicPathsArray = PUBLIC_PATHS.toArray(new String[0]);
                     authHttp.requestMatchers(publicPathsArray).permitAll();
 
                     authHttp.anyRequest().authenticated();
-                    logger.info("REGLAS DE AUTORIZACIÓN CONFIGURADAS");
                 })
                 .authenticationManager(authenticationManager);
 
-        // Añade tu filtro JWT personalizado ANTES del filtro estándar de autenticación por usuario/contraseña
         http.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        logger.info("CONFIGURACION DE SEGURIDAD COMPLETADA");
         return http.build();
     }
 }
