@@ -37,45 +37,32 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         try{
             String path = request.getRequestURI();
-            // Verifica si la ruta actual es pública
             boolean isPublicPath = publicMatchers.stream()
                     .anyMatch(matcher -> matcher.matches(request));
 
             if (isPublicPath) {
-                // Si la ruta es pública, continúa con el siguiente filtro sin procesar el token
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            // Verifica si el token es válido
             if (jwtProvider.isTokenValid(request)) {
-                // Si el token es válido, obtiene la autenticación y la establece en el contexto de seguridad
                 var authentication = jwtProvider.getAuthentication(request);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                // Si el token no es válido, limpia el contexto de seguridad
                 SecurityContextHolder.clearContext();
-                // Establece la respuesta como no autorizada
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                // Opcionalmente, puedes escribir un mensaje de error en la respuesta
                 response.getWriter().write("{\"error\": \"Inautorizado\", \"message\": \"Token inválido o ausente\"}");
                 response.setContentType("application/json");
                 logger.warn("NO SE PUDO ESTABLECER AUTENTICACIÓN PARA EL PATH: {}", path);
-                return; // Detiene el procesamiento si el token no es válido
+                return; 
             }
-            // Continúa con el siguiente filtro en la cadena
             filterChain.doFilter(request, response);
         }catch (Exception e){
-            // Captura cualquier excepción durante el procesamiento del token (firma inválida, etc.)
             logger.error("ERROR AL PROCESAR EL TOKEN PARA EL PATH {}: {}", request.getRequestURI(), e.getMessage());
-            // Limpia el contexto de seguridad en caso de error
             SecurityContextHolder.clearContext();
-            // Establece la respuesta como no autorizada
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            // Opcionalmente, puedes escribir un mensaje de error en la respuesta
             response.getWriter().write("{\"error\": \"Inautorizado\", \"message\": \"" + e.getMessage() + "\"}");
             response.setContentType("application/json");
-            // No llames a filterChain.doFilter(request, response) aquí para detener el procesamiento
             return;
         }
     }
