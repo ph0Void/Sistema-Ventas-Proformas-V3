@@ -91,7 +91,7 @@ public class ImplJwtProvider implements IJwtProvider {
             String rolesClaim = claims.get("roles", String.class);
             if (rolesClaim == null || rolesClaim.isEmpty() ){
                 logger.warn("Claim 'roles' está vacío o no existe en el JWT para el usuario: {}", username);
-                rolesClaim = ""; // Puedes asignar un valor predeterminado o manejarlo de otra manera
+                rolesClaim = ""; 
             }
             if (userId == null){
                 logger.warn("Claim 'userId' no encontrado en los claims del JWT para el usuario: {}", username);
@@ -106,11 +106,10 @@ public class ImplJwtProvider implements IJwtProvider {
                     .id(userId)
                     .username(username)
                     .authorities(authorities)
-            // No necesitas la contraseña aquí para la autenticación basada en token
                     .build();
             return new UsernamePasswordAuthenticationToken(
               userDetails,
-              null,// no se necesita la contraseña ni otros datos sensibles para valida
+              null,
               userDetails.getAuthorities()
             );
 
@@ -135,7 +134,7 @@ public class ImplJwtProvider implements IJwtProvider {
             logger.error("Fallo en la firma del token JWT: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
             logger.warn("Argumento ilegal o claims JWT vacíos: {}", e.getMessage());
-        } catch (Exception e) { // Captura genérica por si acaso
+        } catch (Exception e) { 
             logger.error("Error inesperado al validar el token JWT: {}", e.getMessage());
         }
         return false;
