@@ -2,12 +2,6 @@ package com.TiendaVirtual.proyecto.presentation.controller.common;
 
 import org.springframework.http.ResponseEntity;
 
-/**
- * Interfas generica para operaciones CRUD
- *
- * @param <D> DTO
- * @param <I> ID primary
- */
 public interface ICrudController<D, I> {
 
     default ResponseEntity<?> save(D dto) {
