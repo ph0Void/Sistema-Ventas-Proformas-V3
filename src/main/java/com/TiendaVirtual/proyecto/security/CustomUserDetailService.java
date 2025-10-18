@@ -27,7 +27,6 @@ public class CustomUserDetailService implements UserDetailsService{
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDto userDto = userService.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con username: " + username));
-        logger.info("Loading user by username: {}", userDto);
         Set<GrantedAuthority> authorities;
         if (userDto.getRole() == null){
             logger.warn("No se pudo obtener el rol del usuario: {}", username);
