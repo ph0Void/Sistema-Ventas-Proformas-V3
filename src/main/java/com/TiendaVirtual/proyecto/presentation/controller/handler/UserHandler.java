@@ -19,11 +19,6 @@ public class UserHandler {
     private final Logger logger = LoggerFactory.getLogger(UserHandler.class);
     private final IJwtProvider jwtProvider;
 
-    /**
-     * Obtiene el usuario autenticado completo desde el contexto de seguridad JWT
-     * @return UserPrincipal del usuario autenticado
-     * @throws IllegalArgumentException si el usuario no está autenticado
-     */
     public UserPrincipal getUserAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -51,10 +46,6 @@ public class UserHandler {
         }
     }
 
-    /**
-     * Obtiene el ID del usuario autenticado
-     * @return ID del usuario
-     */
     public Long getCurrentUserId() {
         try {
             UserPrincipal user = getUserAuthenticated();
@@ -65,10 +56,6 @@ public class UserHandler {
         }
     }
 
-    /**
-     * Verifica si el token JWT actual es válido
-     * @return true si el token es válido, false en caso contrario
-     */
     public boolean isCurrentTokenValid() {
         try {
             HttpServletRequest request = getCurrentHttpRequest();
@@ -87,15 +74,9 @@ public class UserHandler {
         }
     }
 
-    /**
-     * Valida tanto la autenticación como la validez del token
-     * @throws IllegalArgumentException si la validación falla
-     */
     public void validateUserAndToken() {
-        // Verifica que el usuario esté autenticado
         UserPrincipal user = getUserAuthenticated();
 
-        // Verifica que el token sea válido
         if (!isCurrentTokenValid()) {
             logger.error("Token JWT inválido para usuario: {}", user.getUsername());
             throw new IllegalArgumentException("Token de autenticación inválido o expirado");
@@ -104,10 +85,6 @@ public class UserHandler {
         logger.debug("Usuario y token validados correctamente: {}", user.getUsername());
     }
 
-    /**
-     * Obtiene la HttpServletRequest actual
-     * @return HttpServletRequest actual o null si no está disponible
-     */
     private HttpServletRequest getCurrentHttpRequest() {
         try {
             ServletRequestAttributes attributes =
@@ -119,10 +96,6 @@ public class UserHandler {
         }
     }
 
-    /**
-     * Obtiene información completa del usuario para logging
-     * @return String con información del usuario
-     */
     public String getUserInfo() {
         try {
             UserPrincipal user = getUserAuthenticated();
