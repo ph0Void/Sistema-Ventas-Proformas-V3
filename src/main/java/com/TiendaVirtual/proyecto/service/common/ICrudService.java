@@ -3,12 +3,7 @@ package com.TiendaVirtual.proyecto.service.common;
 import java.util.List;
 
 import java.util.Optional;
-/**
- * Interfas generica para operaciones CRUD en el servicio
- * @param <D> DTO
- * @param <R> Request DTO
- * @param <I> ID primary
- */
+
 public interface ICrudService <D,R , I> {
     default D save(R dto){
         return null;
