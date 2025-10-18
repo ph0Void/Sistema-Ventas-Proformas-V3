@@ -130,6 +130,5 @@ INSERT INTO products (id, name, url_image, description, price, stock, category_i
 INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (99, 'Cooler Master Hyper 212', 'https://res.cloudinary.com/dkd37ttep/image/upload/v1756752866/tienda_virtual/cooler2.png', 'Disipador de aire económico 120mm', 189.90, 40, 9);
 INSERT INTO products (id, name, url_image, description, price, stock, category_id) VALUES (100, 'Blue Yeti X', 'https://images.pexels.com/photos/841228/pexels-photo-841228.jpeg', 'Micrófono profesional USB con LED', 849.90, 14, 9);
 
--- Ajustar la secuencia de ID para evitar conflictos futuros
 ALTER SEQUENCE categories_id_seq RESTART WITH 10;
 ALTER SEQUENCE products_id_seq RESTART WITH 101;
