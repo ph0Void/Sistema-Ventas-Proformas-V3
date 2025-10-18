@@ -33,7 +33,6 @@ public class ProformaService implements IProformaService {
         Proforma proforma = proformaRepository.findById(idProforma)
                 .orElseThrow(() -> new IllegalArgumentException("No existe proforma con id: " + idProforma));
 
-        // Validar que el vendedor sea el propietario
         if (!proforma.getSeller().getId().equals(idSeller)) {
             throw new IllegalArgumentException("No tiene permisos para ver esta proforma");
         }
@@ -63,42 +62,34 @@ public class ProformaService implements IProformaService {
     @Override
     @Transactional
     public ProformaDto createOrder(ProformaReqDto order, Long idSeller) {
-        // Validar vendedor
         Seller seller = sellerRepository.findById(idSeller)
                 .orElseThrow(() -> new IllegalArgumentException("No existe vendedor con id: " + idSeller));
 
-        // Validar que haya productos en la proforma
         if (order.getOrderDetails() == null || order.getOrderDetails().isEmpty()) {
             throw new IllegalArgumentException("La proforma debe contener al menos un producto");
         }
 
-        // Verificar disponibilidad de productos (SIN descontar stock)
         double totalAmount = 0.0;
         List<OrderDetail> orderDetails = new ArrayList<>();
 
         for (OrderDetailReqDto detailReq : order.getOrderDetails()) {
-            // Validar cantidad
             if (detailReq.getQuantity() <= 0) {
                 throw new IllegalArgumentException("La cantidad debe ser mayor a 0");
             }
 
-            // Buscar producto
             Product product = productRepository.findById(detailReq.getProductId())
                     .orElseThrow(() -> new IllegalArgumentException(
                             "No existe producto con id: " + detailReq.getProductId()));
 
-            // Verificar disponibilidad (NO descontar stock)
             if (product.getStock() < detailReq.getQuantity()) {
                 throw new IllegalArgumentException(
                         String.format("Stock insuficiente para el producto '%s'. Stock disponible: %d, solicitado: %d",
                                 product.getName(), product.getStock(), detailReq.getQuantity()));
             }
 
-            // Calcular subtotal
             double subtotal = product.getPrice() * detailReq.getQuantity();
             totalAmount += subtotal;
 
-            // Crear detalle de orden (temporal para la proforma)
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setProduct(product);
             orderDetail.setQuantity(detailReq.getQuantity());
@@ -107,28 +98,22 @@ public class ProformaService implements IProformaService {
             orderDetails.add(orderDetail);
         }
 
-        // Crear o buscar cliente
         Client client = createOrFindClient(order.getClient());
 
-        // Crear proforma
         Proforma proforma = new Proforma();
         proforma.setSeller(seller);
         proforma.setClient(client);
         proforma.setTotal(totalAmount);
 
-        // Guardar proforma
         Proforma savedProforma = proformaRepository.save(proforma);
 
-        // Asignar proforma a los detalles y guardar
         for (OrderDetail detail : orderDetails) {
             detail.setProforma(savedProforma);
         }
         orderDetailRepository.saveAll(orderDetails);
 
-        // Actualizar la proforma con los detalles
         savedProforma.setOrderDetails(orderDetails);
 
-        // Convertir a DTO respuesta
      //   ProformaDto proformaDto = new ProformaDto();
      //   BeanUtils.copyProperties(savedProforma, proformaDto);
 
@@ -138,25 +123,20 @@ public class ProformaService implements IProformaService {
     @Override
     @Transactional
     public ProformaDto updateOrder(Long idOrder, ProformaReqDto order, Long idSeller) {
-        // Buscar proforma existente
         Proforma existingProforma = proformaRepository.findById(idOrder)
                 .orElseThrow(() -> new IllegalArgumentException("No existe proforma con id: " + idOrder));
 
-        // Validar que el vendedor sea el propietario
         if (!existingProforma.getSeller().getId().equals(idSeller)) {
             throw new IllegalArgumentException("No tiene permisos para modificar esta proforma");
         }
 
-        // Validar que haya productos
         if (order.getOrderDetails() == null || order.getOrderDetails().isEmpty()) {
             throw new IllegalArgumentException("La proforma debe contener al menos un producto");
         }
 
-        // Eliminar detalles anteriores
         orderDetailRepository.deleteAll(existingProforma.getOrderDetails());
         existingProforma.getOrderDetails().clear();
 
-        // Verificar disponibilidad de nuevos productos
         double totalAmount = 0.0;
         List<OrderDetail> newOrderDetails = new ArrayList<>();
 
@@ -169,7 +149,6 @@ public class ProformaService implements IProformaService {
                     .orElseThrow(() -> new IllegalArgumentException(
                             "No existe producto con id: " + detailReq.getProductId()));
 
-            // Verificar disponibilidad (NO descontar stock)
             if (product.getStock() < detailReq.getQuantity()) {
                 throw new IllegalArgumentException(
                         String.format("Stock insuficiente para el producto '%s'. Stock disponible: %d, solicitado: %d",
@@ -188,18 +167,15 @@ public class ProformaService implements IProformaService {
             newOrderDetails.add(orderDetail);
         }
 
-        // Actualizar total y cliente si es necesario
         existingProforma.setTotal(totalAmount);
         if (order.getClient() != null) {
             Client updatedClient = createOrFindClient(order.getClient());
             existingProforma.setClient(updatedClient);
         }
-
-        // Guardar nuevos detalles
+        
         orderDetailRepository.saveAll(newOrderDetails);
         existingProforma.setOrderDetails(newOrderDetails);
 
-        // Guardar proforma actualizada
         Proforma updatedProforma = proformaRepository.save(existingProforma);
 
         //ProformaDto proformaDto = new ProformaDto();
@@ -214,12 +190,9 @@ public class ProformaService implements IProformaService {
         Proforma proforma = proformaRepository.findById(idOrder)
                 .orElseThrow(() -> new IllegalArgumentException("No existe proforma con id: " + idOrder));
 
-        // Validar vendedor
         if (!proforma.getSeller().getId().equals(idSeller)) {
             throw new IllegalArgumentException("El vendedor no está autorizado para eliminar esta proforma");
         }
-
-        // Eliminar proforma (cascade eliminará los detalles)
         proformaRepository.delete(proforma);
     }
 
