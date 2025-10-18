@@ -11,8 +11,7 @@ import java.util.Map;
 
 /**
  * Maneja las excepciones globales de la aplicación.
- * Esta clase puede ser utilizada para capturar y manejar excepciones
- * que ocurren en los controladores REST.
+ *  recordar
  */
 @RestControllerAdvice
 public class GlobalExeptionHandler {
@@ -29,7 +28,7 @@ public class GlobalExeptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Un error inesperado ocurrio: " + ex.getMessage());
     }
-    // configuracion para habiliar el mensaje las validaciones
+    
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleInvalidArguments(MethodArgumentNotValidException exception) {
         Map<String, String> errors = new HashMap<>();
