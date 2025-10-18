@@ -58,12 +58,10 @@ public class SaleService implements ISaleService {
         Seller seller = sellerRepository.findById(idSeller)
                 .orElseThrow(() -> new IllegalArgumentException("No existe vendedor con id: " + idSeller));
 
-        // Validar que haya productos en la orden
         if (order.getOrderDetails() == null || order.getOrderDetails().isEmpty()) {
             throw new IllegalArgumentException("La orden debe contener al menos un producto");
         }
 
-        // Verificar stock y obtener productos
         List<Product> productsToUpdate = new ArrayList<>();
         double totalAmount = 0.0;
 
@@ -73,12 +71,10 @@ public class SaleService implements ISaleService {
                 throw new IllegalArgumentException("La cantidad debe ser mayor a 0");
             }
 
-            // Buscar producto
             Product product = productRepository.findById(detailReq.getProductId())
                     .orElseThrow(() -> new IllegalArgumentException(
                             "No existe producto con id: " + detailReq.getProductId()));
 
-            // Verificar stock disponible
             if (product.getStock() < detailReq.getQuantity()) {
                 throw new IllegalArgumentException(
                         String.format("Stock insuficiente para el producto '%s'. Stock disponible: %d, solicitado: %d",
@@ -94,19 +90,15 @@ public class SaleService implements ISaleService {
             totalAmount += subtotal;
         }
 
-        // Crear o buscar cliente
         Client client = createOrFindClient(order.getClient());
 
-        // Crear venta
         Sale sale = new Sale();
         sale.setSeller(seller);
         sale.setClient(client);
         sale.setTotal(totalAmount);
 
-        // Guardar venta
         Sale savedSale = saleRepository.save(sale);
 
-        // Crear detalles de la orden
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (int i = 0; i < order.getOrderDetails().size(); i++) {
             OrderDetailReqDto detailReq = order.getOrderDetails().get(i);
@@ -121,31 +113,23 @@ public class SaleService implements ISaleService {
             orderDetails.add(orderDetail);
         }
 
-        // Guardar detalles
         orderDetailRepository.saveAll(orderDetails);
-
-        // Actualizar stock de productos
         productRepository.saveAll(productsToUpdate);
 
-        // Actualizar la venta con los detalles
         savedSale.setOrderDetails(orderDetails);
 
-        // Convertir a DTO respuesta
+      
         // SaleDto saleDto = new SaleDto();
         // BeanUtils.copyProperties(savedSale, saleDto);
-
-        // return saleDto;
         return SaleDto.toDto(savedSale);
     }
 
     @Override
     @Transactional
     public SaleDto updateOrder(Long idOrder, SaleReqDto order, Long idSeller) {
-        // Buscar venta existente
         Sale existingSale = saleRepository.findById(idOrder)
                 .orElseThrow(() -> new IllegalArgumentException("No existe venta con id: " + idOrder));
 
-        // Validar que el vendedor sea el propietario
         if (!existingSale.getSeller().getId().equals(idSeller)) {
             throw new IllegalArgumentException("No tiene permisos para modificar esta venta");
         }
@@ -157,13 +141,9 @@ public class SaleService implements ISaleService {
             productRepository.save(product);
         }
 
-        // Eliminar detalles anteriores
         orderDetailRepository.deleteAll(existingSale.getOrderDetails());
-
-        // Recrear la venta con los nuevos datos
         existingSale.getOrderDetails().clear();
 
-        // Aplicar la misma lógica de createOrder para los nuevos productos
         List<Product> productsToUpdate = new ArrayList<>();
         double totalAmount = 0.0;
 
@@ -189,10 +169,8 @@ public class SaleService implements ISaleService {
             totalAmount += subtotal;
         }
 
-        // Actualizar total
         existingSale.setTotal(totalAmount);
 
-        // Crear nuevos detalles
         List<OrderDetail> newOrderDetails = new ArrayList<>();
         for (int i = 0; i < order.getOrderDetails().size(); i++) {
             OrderDetailReqDto detailReq = order.getOrderDetails().get(i);
@@ -207,7 +185,6 @@ public class SaleService implements ISaleService {
             newOrderDetails.add(orderDetail);
         }
 
-        // Guardar cambios
         orderDetailRepository.saveAll(newOrderDetails);
         productRepository.saveAll(productsToUpdate);
         Sale updatedSale = saleRepository.save(existingSale);
@@ -222,23 +199,19 @@ public class SaleService implements ISaleService {
     @Override
     @Transactional
     public void deleteOrder(Long idOrder, Long idSeller) {
-        // Buscar venta
         Sale sale = saleRepository.findById(idOrder)
                 .orElseThrow(() -> new IllegalArgumentException("No existe venta con id: " + idOrder));
 
-        // Validar permisos
         if (!sale.getSeller().getId().equals(idSeller)) {
             throw new IllegalArgumentException("No tiene permisos para eliminar esta venta");
         }
 
-        // Revertir stock
         for (OrderDetail detail : sale.getOrderDetails()) {
             Product product = detail.getProduct();
             product.setStock(product.getStock() + detail.getQuantity());
             productRepository.save(product);
         }
 
-        // Eliminar venta (cascade eliminará los detalles)
         saleRepository.delete(sale);
     }
 
