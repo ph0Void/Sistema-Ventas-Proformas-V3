@@ -12,11 +12,10 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data  # Persistir datos
+      - postgres_data:/var/lib/postgresql/data  
     networks:
       - app_network
 
-  # API Spring Boot
   spring_app:
     build:
       context: .
@@ -25,12 +24,10 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # Conexión a BD usando nombre del servicio
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/proyecto_tienda_virtual
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin
 
-      # Variables de entorno externas
       CLOUDINARY_URL: ${CLOUDINARY_URL}
       CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
       CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
@@ -39,7 +36,7 @@ services:
       OPENAI_BASE_URL: ${OPENAI_BASE_URL}
       OPENAI_MODEL: ${OPENAI_MODEL}
     depends_on:
-      - postgres  # Esperar a que postgres esté listo
+      - postgres  
     networks:
       - app_network
 
